@@ -12,9 +12,8 @@ public class DistrictsGenerator : MonoBehaviour {
 	[SerializeField]
 	private float    cityCenterX, cityCenterY;
 
-
 	/// <summary>
-	/// Update the text to face the camera if shown.
+	/// Start the program
 	/// </summary>
 	void Start () {
 		generateDistrictPoints (3, 500);
@@ -80,7 +79,7 @@ public class DistrictsGenerator : MonoBehaviour {
 
 		}
 
-		generateCityEdges (10, 100, 100, 500);
+		generateCityEdges (50, 100, 2000, 1500);
 	}
 
 	/// <summary>
@@ -90,6 +89,7 @@ public class DistrictsGenerator : MonoBehaviour {
 	/// <param name="maxVerts">Maximum # of vertices for edges of city</param>
 	/// <param name="maxDistFromCenter">Maximum distance of all verticies from center.</param>
 	/// <param name="minDistFromCenter">Minimum distance of all verticies from center.</param>
+	/// 
 	void generateCityEdges(int minVerts, int maxVerts, float maxDistFromCenter, float minDistFromCenter){
 
 		int numVerts = Random.Range (minVerts, maxVerts);
@@ -102,10 +102,17 @@ public class DistrictsGenerator : MonoBehaviour {
 			float furthestX = Mathf.Cos(angleFromCenter)*maxDistFromCenter;
 			float furthestY = Mathf.Sin(angleFromCenter)*maxDistFromCenter;
 
-			float percentageLength = Mathf.PerlinNoise (furthestX, furthestY);
+			float percentageLength = Mathf.PerlinNoise (cityCenterX, cityCenterY);
 			float distanceFromCenter = percentageLength * maxDistFromCenter;
 
+			float newX = cityCenterX + (distanceFromCenter) * Mathf.Cos (angleFromCenter);
+			float newY = cityCenterY + (distanceFromCenter) * Mathf.Sin (angleFromCenter);
 
+			points [i, 0] = newX;
+			points [i, 1] = newY;
 		}
 	}
 }
+
+
+// http://stackoverflow.com/questions/1638437/given-an-angle-and-length-how-do-i-calculate-the-coordinates
