@@ -7,6 +7,9 @@ public class DistrictsGenerator : MonoBehaviour {
 	private float[,] districtEndPoints;
 
 	[SerializeField]
+	private float[,] districtEdges;
+
+	[SerializeField]
 	private float    cityCenterX, cityCenterY;
 
 
@@ -14,14 +17,14 @@ public class DistrictsGenerator : MonoBehaviour {
 	/// Update the text to face the camera if shown.
 	/// </summary>
 	void Start () {
-		// generateDistrictPoints (3, 500);
+		generateDistrictPoints (3, 500);
 	}
 
 	/// <summary>
 	/// Generates city center and district edges. Edges of districts are defined as (cityCenterX,cityCenterY)->(districtEndPoints[i,0],districtEndPoints[i,1])
+	/// </summary>
 	/// <param name="numDistricts">Number of districts desired -- currently supports 3.</param>
 	/// <param name="districtMaxSpan">District max span for one side from center point to edge.</param>
-	/// </summary>
 	void generateDistrictPoints(int numDistricts, int districtMaxSpan){
 
 		int[,] initialSeedPoints = new int	[numDistricts,2];
@@ -74,6 +77,34 @@ public class DistrictsGenerator : MonoBehaviour {
 
 			districtEndPoints [i, 0] = currentEndpointX;
 			districtEndPoints [i, 1] = currentEndpointY;
+
+		}
+
+		generateCityEdges (10, 100, 100, 500);
+	}
+
+	/// <summary>
+	/// Generates the city edge vertices.
+	/// </summary>
+	/// <param name="minVerts">Minimum # of vertices for edges of city.</param>
+	/// <param name="maxVerts">Maximum # of vertices for edges of city</param>
+	/// <param name="maxDistFromCenter">Maximum distance of all verticies from center.</param>
+	/// <param name="minDistFromCenter">Minimum distance of all verticies from center.</param>
+	void generateCityEdges(int minVerts, int maxVerts, float maxDistFromCenter, float minDistFromCenter){
+
+		int numVerts = Random.Range (minVerts, maxVerts);
+		float[,] points = new float [numVerts, 2];
+
+		// generate randomly angled points & add to vector
+		for (int i = 0; i < numVerts; i++){
+
+			float angleFromCenter = Random.Range (0, 2 * Mathf.PI);
+			float furthestX = Mathf.Cos(angleFromCenter)*maxDistFromCenter;
+			float furthestY = Mathf.Sin(angleFromCenter)*maxDistFromCenter;
+
+			float percentageLength = Mathf.PerlinNoise (furthestX, furthestY);
+			float distanceFromCenter = percentageLength * maxDistFromCenter;
+
 
 		}
 	}
