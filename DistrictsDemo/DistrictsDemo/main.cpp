@@ -68,7 +68,9 @@ vector<vector<float>> perlinNoise(float x, float y){
 
 int main(int argc, const char * argv[]) {
     
-    int numDistricts = atoi(argv[1]);   // passed argument for number of districts; currently only support 3
+    int numDistricts = 3;
+    
+    // atoi(argv[1]);   // passed argument for number of districts; currently only support 3
     int districtSpan = 500;             // the length of one vector that creates a district barrier.
     
     vector<vector<int>> startPoints(numDistricts);  // randomly initialized district points
