@@ -35,8 +35,6 @@ using namespace std;
  */
 
 
-
-
 /// Returns a vector of 50-100 points who are randomly distributed around center point x,y and whose distance is based on distFromXY (will be perlin noise later)
 /// http://stackoverflow.com/questions/9879258/how-can-i-generate-random-points-on-a-circles-circumference-in-javascript
 
@@ -50,7 +48,7 @@ vector<vector<float>> perlinNoise(float x, float y){
     // set rough distance from center (until we have perlin noise func)
     float distFromXY = 500.0f;
     
-    // generate random points & add to vector
+    // generate randomly angled points & add to vector
     srand(time(0));
     for (int i = 0; i < numPoints; i++){
         
