@@ -34,6 +34,38 @@ using namespace std;
  http://stackoverflow.com/questions/2512978/how-to-delete-duplicate-vectors-within-a-multidimensional-vector
  */
 
+
+
+
+/// Returns a vector of 50-100 points who are randomly distributed around center point x,y and whose distance is based on distFromXY (will be perlin noise later)
+/// http://stackoverflow.com/questions/9879258/how-can-i-generate-random-points-on-a-circles-circumference-in-javascript
+
+vector<vector<float>> perlinNoise(float x, float y){
+    
+    // determine how many points to generate (50-100)
+    vector<vector<float>> points;
+    srand(time(0));
+    int numPoints = rand()%(100-50 + 1) + 50;
+    
+    // set rough distance from center (until we have perlin noise func)
+    float distFromXY = 500.0f;
+    
+    // generate random points & add to vector
+    srand(time(0));
+    for (int i = 0; i < numPoints; i++){
+        
+        float angle = rand() * 3.14 * 2;
+        float newX = cos(angle)*distFromXY;
+        float newY = sin(angle)*distFromXY;
+        
+        vector<float> point = {newX, newY};
+        points.push_back(point);
+    }
+    
+    return points;
+}
+
+
 int main(int argc, const char * argv[]) {
     
     int numDistricts = atoi(argv[1]);   // passed argument for number of districts; currently only support 3
@@ -71,6 +103,7 @@ int main(int argc, const char * argv[]) {
                     if (abs(startPoints[i][0] - startPoints[j][0]) < districtSpan/10){
                         while(abs(startPoints[i][0] - startPoints[j][0]) < 100){
                             startPoints[i][0] = rand() % districtSpan;
+                        }
                     }
                 }
                     
@@ -84,13 +117,6 @@ int main(int argc, const char * argv[]) {
             }
         }
     }
-        
-    }
-    
-    
-//    for (int i = 0; i < numDistricts; i++){
-//        cout << startPoints[i][0] << "," << startPoints[i][1] << endl;
-//    }
     
     
     // to save triangle center point
@@ -112,14 +138,9 @@ int main(int argc, const char * argv[]) {
         }
     }
     
-//    for (int i = 0; i < midPoints.size(); i++){
-//        cout << midPoints[i][0] << "," << midPoints[i][1] << endl;
-//    }
-    
     // remove unnecessary duplicate points
     sort(midPoints.begin(), midPoints.end());
     midPoints.erase(unique(midPoints.begin(), midPoints.end()), midPoints.end());
-    
     
     // using these midpoints, get the center of the triangle
     for (int i = 0; i < midPoints.size(); i++){
@@ -147,6 +168,7 @@ int main(int argc, const char * argv[]) {
         
         // account for position of point relative in space when assigning end point
         float x,y;
+        
         if (midPoints[i][0] < tCenterX){
             x = (float)tCenterX - k;
         } else {
@@ -177,7 +199,10 @@ int main(int argc, const char * argv[]) {
     }
     
     
-    
+    // PERLIN NOISE TIME
+    vector<vector<float>> districtEdges = perlinNoise(tCenterX, tCenterY);
     
     return 0;
 }
+
+
