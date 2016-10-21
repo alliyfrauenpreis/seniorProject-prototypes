@@ -18,7 +18,7 @@ public class DistrictsGenerator : MonoBehaviour {
 	/// Entry point of the generator
 	/// </summary>
 	void Start () {
-		generateDistrictPoints (3, 500);
+		generateDistrictPoints (3, 2000);
 	}
 
 	/// <summary>
@@ -35,10 +35,26 @@ public class DistrictsGenerator : MonoBehaviour {
 				  cityCenter 	    = new Vector2();
 			      districts 		= new AssemblyCSharp.District[numDistricts];
 
-		// generate initial random seed points
+		// generate initial random seed points -- range is districtMaxSpan to districtMaxSpan * 2 to prevent negatives.
 		for (int i = 0; i < numDistricts; ++i) {
-			initialSeedPoints[i].x = Random.Range(1, districtMaxSpan);
-			initialSeedPoints[i].y = Random.Range(1, districtMaxSpan);
+			
+			initialSeedPoints[i].x = Random.Range(districtMaxSpan*i, districtMaxSpan*(i+1));
+			initialSeedPoints[i].y = Random.Range(districtMaxSpan*i, districtMaxSpan*(i+1));
+
+			// this code ensures that neither the x nor the y values of this random point
+			// are too close to another existing random point. it will re-randomize if so.
+			if (initialSeedPoints.Length > 0){
+				for (int j = 0; j < initialSeedPoints.Length; j++){
+					if (initialSeedPoints[i].x != initialSeedPoints[j].x){
+						if (Mathf.Abs(initialSeedPoints[i].x - initialSeedPoints[j].x) < districtMaxSpan/2 || Mathf.Abs(initialSeedPoints[i].y - initialSeedPoints[j].y) < districtMaxSpan/2){
+							while(Mathf.Abs(initialSeedPoints[i].x - initialSeedPoints[j].x) < districtMaxSpan/2 || Mathf.Abs(initialSeedPoints[i].y - initialSeedPoints[j].y) < districtMaxSpan/2){
+								initialSeedPoints[i].x = Random.Range(districtMaxSpan, districtMaxSpan*2);
+								initialSeedPoints[i].y = Random.Range(districtMaxSpan, districtMaxSpan*2);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		// calculate midpoints of all initial seeds
@@ -103,7 +119,7 @@ public class DistrictsGenerator : MonoBehaviour {
 		}
 
 		// generate verticies for each district to allow for more natural edges
-		generateCityEdges (50, 100, 800, 300);
+		generateCityEdges (10, 30, 800, 300);
 	}
 
 	/// <summary>
@@ -149,15 +165,17 @@ public class DistrictsGenerator : MonoBehaviour {
 
 		/* This is for testing purposes */
 		bool[,] pointsCheck = new bool[100,3];
+		Vector2[] points = new Vector2[100];
+
 		for (int i = 0; i < 100; i++) {
 
-			float x = Random.Range (-500, 500);
-			float y = Random.Range (-500, 500);
+			float x = Random.Range (cityCenter.x, 4000);
+			float y = Random.Range (cityCenter.y, 4000);
 
 			Vector2 newPoint = new Vector2 (x, y);
-
 			for (int j = 0; j < 3; j++){
 				pointsCheck[i,j] = districts[j].containsPoint(newPoint);
+				points [i] = newPoint;
 			}
 		}
 	}
