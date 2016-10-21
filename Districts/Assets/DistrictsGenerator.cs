@@ -59,12 +59,20 @@ public class DistrictsGenerator : MonoBehaviour {
 
 		// calculate midpoints of all initial seeds
 		for (int i = 0; i < numDistricts; ++i){
-			for (int j = 0; j  < numDistricts; ++j){
-				float x = (initialSeedPoints[i].x+initialSeedPoints[j].x)/2;
-				float y = (initialSeedPoints[i].y+initialSeedPoints[j].y)/2;
-				seedMidPoints[j].x = x;
-				seedMidPoints[j].y = y;
+				
+			float x = 0;
+			float y = 0;
+
+			if (i == numDistricts - 1) {
+				x = (initialSeedPoints [i].x + initialSeedPoints [0].x) / 2;
+				y = (initialSeedPoints [i].y + initialSeedPoints [0].y) / 2;
+			} else {
+				x = (initialSeedPoints [i].x + initialSeedPoints [i+1].x) / 2;
+				y = (initialSeedPoints [i].y + initialSeedPoints [i+1].y) / 2;
 			}
+
+			seedMidPoints [i].x = x;
+			seedMidPoints [i].y = y;
 		}
 
 		// using these midpoints, get the center of the city
@@ -163,14 +171,14 @@ public class DistrictsGenerator : MonoBehaviour {
 			districts [i].setVerticies (newDistrictVerts);
 		}
 
-		/* This is for testing purposes */
+		/* This is for testing purposes 
 		bool[,] pointsCheck = new bool[100,3];
 		Vector2[] points = new Vector2[100];
 
 		for (int i = 0; i < 100; i++) {
 
-			float x = Random.Range (cityCenter.x, 4000);
-			float y = Random.Range (cityCenter.y, 4000);
+			float x = Random.Range (cityCenter.x, cityCenter.x*2);
+			float y = Random.Range (cityCenter.x, cityCenter.x*2);
 
 			Vector2 newPoint = new Vector2 (x, y);
 			for (int j = 0; j < 3; j++){
@@ -178,7 +186,17 @@ public class DistrictsGenerator : MonoBehaviour {
 				points [i] = newPoint;
 			}
 		}
+		*/
+
+		bool[] pointsCheck = new bool[3];
+		Vector2 point = new Vector2 (cityCenter.x + 100, cityCenter.y + 100);
+		for (int j = 0; j < 3; j++){
+			pointsCheck[j] = districts[j].containsPoint(point);
+		}
+
+		int yay = 0;
 	}
+
 }
 
 

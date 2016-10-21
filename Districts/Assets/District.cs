@@ -69,21 +69,23 @@ namespace AssemblyCSharp
 		public bool containsPoint(Vector2 point){
 
 			// check whether this point's x value is between the district's edges
-			if (point.x < edgeVerticies [0].x && point.x < edgeVerticies[1].x)
+			if (point.x < edgeVerticies [0].x && point.x < edgeVerticies[1].x && point.x < cityCenter.x)
 				return false;
 
-			if (point.x > edgeVerticies [0].x && point.x > edgeVerticies[1].x)
+			if (point.x > edgeVerticies [0].x && point.x > edgeVerticies[1].x && point.x > cityCenter.x)
 				return false;
 
 			// check whether this point's y value is between the district's edges
-			if (point.y < edgeVerticies [0].y && point.y < edgeVerticies[1].y)
+			if (point.y < edgeVerticies [0].y && point.y < edgeVerticies[1].y && point.y < cityCenter.y)
 				return false;
 
-			if (point.y > edgeVerticies [0].y && point.y > edgeVerticies[1].y)
+			if (point.y > edgeVerticies [0].y && point.y > edgeVerticies[1].y && point.y > cityCenter.y)
 				return false;
 
 
 			// HAVE TO CHECK AGAINST CENTER POINT OF THE CITY.
+
+
 			return true;
 		}
 	}
