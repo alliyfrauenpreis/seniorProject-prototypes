@@ -189,7 +189,6 @@ public class DistrictsGenerator : MonoBehaviour {
 				points [i] = newPoint;
 			}
 		}
-		*/
 
 		bool[] pointsCheck = new bool[3];
 		Vector2 point = new Vector2 (cityCenter.x + 100, cityCenter.y + 100);
@@ -198,6 +197,9 @@ public class DistrictsGenerator : MonoBehaviour {
 		}
 
 		int yay = 0;
+
+
+		*/
 	}
 
 }
