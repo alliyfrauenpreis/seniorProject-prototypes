@@ -1,24 +1,31 @@
 ﻿using System;
+using UnityEngine;
+using System.Collections;
+using AssemblyCSharp;
 
 namespace AssemblyCSharp
 {
 	public class District
 	{
-		private float[,] edgeVerticies;
-		private float[,] cityCenter;
+		private Vector2[] edgeVerticies;
+		private Vector2   cityCenter;
 
-		public District (float[,] center)
+		public District (Vector2 center)
 		{
 			cityCenter = center;
 		}
 
-		public void setVerticies(float[,] verts){
+		public void setVerticies(Vector2[] verts){
 
 			edgeVerticies = verts;
 		}
 
+		public Vector2[] getVerticies( ){
 
-		public bool containsPoint(float[,] point){
+			return edgeVerticies;
+		}
+
+		public bool containsPoint(Vector2[] point){
 
 			return false;
 		}

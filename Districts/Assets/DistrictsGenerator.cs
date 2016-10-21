@@ -6,13 +6,13 @@ using AssemblyCSharp;
 public class DistrictsGenerator : MonoBehaviour {
 
 	[SerializeField]
-	private float[,] districtEndPoints;
+	private Vector2[] districtEndPoints;
 
 	[SerializeField]
-	private float[,] districtEdges;
+	private Vector2[] districtEdges;
 
 	[SerializeField]
-	private float[,] cityCenter;
+	private Vector2 cityCenter;
 
 	private District[] districts;
 
@@ -30,25 +30,25 @@ public class DistrictsGenerator : MonoBehaviour {
 	/// <param name="districtMaxSpan">District max span for one side from center point to edge.</param>
 	void generateDistrictPoints(int numDistricts, int districtMaxSpan){
 
-		int[,] initialSeedPoints = new int	[numDistricts,2];
-		int[,] seedMidPoints	 = new int	[numDistricts,2];
-			   districtEndPoints = new float[numDistricts,2];
-			   cityCenter 		 = new float[1, 2];
-			   districts 		 = new AssemblyCSharp.District[numDistricts];
+		Vector2[] initialSeedPoints = new Vector2[numDistricts];
+		Vector2[] seedMidPoints		= new Vector2[numDistricts];
+				  districtEndPoints = new Vector2[numDistricts];
+				  cityCenter 	    = new Vector2();
+			      districts 		= new AssemblyCSharp.District[numDistricts];
 
 		// generate initial random seed points
 		for (int i = 0; i < numDistricts; ++i) {
-			initialSeedPoints[i,0] = Random.Range(1, districtMaxSpan);
-			initialSeedPoints[i,1] = Random.Range(1, districtMaxSpan);
+			initialSeedPoints[i].x = Random.Range(1, districtMaxSpan);
+			initialSeedPoints[i].y = Random.Range(1, districtMaxSpan);
 		}
 
 		// calculate midpoints of all initial seeds
 		for (int i = 0; i < numDistricts; ++i){
 			for (int j = 0; j  < numDistricts; ++j){
-					int x = (initialSeedPoints[i,0]+initialSeedPoints[j,0])/2;
-					int y = (initialSeedPoints[i,1]+initialSeedPoints[j,1])/2;
-					seedMidPoints[j,0] = x;
-					seedMidPoints[j,1] = y;
+				float x = (initialSeedPoints[i].x+initialSeedPoints[j].x)/2;
+				float y = (initialSeedPoints[i].y+initialSeedPoints[j].y)/2;
+				seedMidPoints[j].x = x;
+				seedMidPoints[j].y = y;
 			}
 		}
 
@@ -57,39 +57,37 @@ public class DistrictsGenerator : MonoBehaviour {
 		float cityCenterY = 0;
 
 		for (int i = 0; i < numDistricts; ++i){
-			cityCenterX += seedMidPoints[i,0];
-			cityCenterY += seedMidPoints[i,1];
+			cityCenterX += seedMidPoints [i].x;
+			cityCenterY += seedMidPoints[i].y;
 		}
 
-		cityCenterX = cityCenterX/numDistricts;
-		cityCenterY = cityCenterY/numDistricts;
-
-		cityCenter [0, 0] = cityCenterX;
-		cityCenter [0, 1] = cityCenterY;
+		cityCenter.x = cityCenterX/numDistricts;
+		cityCenter.y = cityCenterY/numDistricts;
 
 		// for each point, get the slope and it's length based districtSpan and its position relative to city center
 		for (int i = 0; i < numDistricts; ++i){
 
-			float slope = ((float)(cityCenterY-seedMidPoints[i,1]))/((float)(cityCenterX-seedMidPoints[i,0]));
+			float slope = ((float)(cityCenterY-seedMidPoints[i].y))/((float)(cityCenterX-seedMidPoints[i].x));
 			float k = districtMaxSpan/(Mathf.Sqrt(1+Mathf.Pow(slope, 2.0f)));
 
 			// account for position of point relative in space when assigning end point
 			float currentEndpointX = 0.0f;
 			float currentEndpointY = 0.0f;
 
-			if (seedMidPoints[i,0] < cityCenterX)	currentEndpointX = (float)cityCenterX - k;
+			if (seedMidPoints[i].x < cityCenterX)	currentEndpointX = (float)cityCenterX - k;
 			else 									currentEndpointX = (float)cityCenterX + k;
 		
-			if (seedMidPoints[i,1] < cityCenterY)	currentEndpointY = (float)cityCenterY - (k*slope);
+			if (seedMidPoints[i].y < cityCenterY)	currentEndpointY = (float)cityCenterY - (k*slope);
 			else 									currentEndpointY = (float)cityCenterY + (k*slope);
 
-			districtEndPoints [i, 0] = currentEndpointX;
-			districtEndPoints [i, 1] = currentEndpointY;
+			districtEndPoints [i].x = currentEndpointX;
+			districtEndPoints [i].y = currentEndpointY;
 
 		}
 
 		for (int i = 0; i < numDistricts; i++) {
 			districts [i] = new District (cityCenter);
+		//	districts [i].setVerticies (districtEndPoints [i]);
 		}
 
 		generateCityEdges (50, 100, 800, 300);
@@ -105,27 +103,26 @@ public class DistrictsGenerator : MonoBehaviour {
 	/// 
 	void generateCityEdges(int minVerts, int maxVerts, float maxDistFromCenter, float minDistFromCenter){
 
-		int numVerts = Random.Range (minVerts, maxVerts);
-		float[,] points = new float [numVerts, 2];
+		// for each district, generate random # of randomly angled points within the current area of the district & add to vector
+		for (int i = 0; i < districts.Length; i++){
 
-		// generate randomly angled points & add to vector
-		for (int i = 0; i < numVerts; i++){
+			int numVerts = Random.Range (minVerts, maxVerts);
+			Vector2[] points = new Vector2 [numVerts];
 
-			float angleFromCenter = Random.Range (0, 2 * Mathf.PI);
-			float furthestX = Mathf.Cos(angleFromCenter)*maxDistFromCenter;
-			float furthestY = Mathf.Sin(angleFromCenter)*maxDistFromCenter;
+			Vector2[] currentVerts = districts [i].getVerticies();
 
-			float cityCenterX = cityCenter [0, 0];
-			float cityCenterY = cityCenter [0, 1];
+			for (int j = 0; j < numVerts; ++j){
 
-			float percentageLength = Mathf.PerlinNoise (cityCenterX, cityCenterY);
-			float distanceFromCenter = percentageLength * maxDistFromCenter;
+				float percentageLength = Mathf.PerlinNoise (cityCenter.x, cityCenter.y);
+				float distanceFromCenter = percentageLength * maxDistFromCenter;
 
-			float newX = cityCenterX + (distanceFromCenter) * Mathf.Cos (angleFromCenter);
-			float newY = cityCenterY + (distanceFromCenter) * Mathf.Sin (angleFromCenter);
+				/*float newX = cityCenterX + (distanceFromCenter) * Mathf.Cos (angleFromCenter);
+				float newY = cityCenterY + (distanceFromCenter) * Mathf.Sin (angleFromCenter);
 
-			points [i, 0] = newX;
-			points [i, 1] = newY;
+				points [i, 0] = newX;
+				points [i, 1] = newY;*/
+
+			}
 		}
 	}
 }
