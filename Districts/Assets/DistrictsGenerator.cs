@@ -87,21 +87,24 @@ public class DistrictsGenerator : MonoBehaviour {
 		cityCenter.x = cityCenterX/numDistricts;
 		cityCenter.y = cityCenterY/numDistricts;
 
+		float[] slopes = new float[3];
+
 		// for each point, get the slope, its length based districtSpan, and its position relative to city center
 		for (int i = 0; i < numDistricts; ++i){
 
-			float slope = ((float)(cityCenterY-seedMidPoints[i].y))/((float)(cityCenterX-seedMidPoints[i].x));
+			float slope = (cityCenter.y-seedMidPoints[i].y)/(cityCenter.x-seedMidPoints[i].x);
+			slopes [i] = slope;
 			float k = districtMaxSpan/(Mathf.Sqrt(1+Mathf.Pow(slope, 2.0f)));
 
 			// account for position of point relative in space when assigning end point
 			float currentEndpointX = 0.0f;
 			float currentEndpointY = 0.0f;
 
-			if (seedMidPoints[i].x < cityCenterX)	currentEndpointX = (float)cityCenter.x - k;
-			else 									currentEndpointX = (float)cityCenter.x + k;
+			if (seedMidPoints[i].x < cityCenterX)	currentEndpointX = cityCenter.x - k;
+			else 									currentEndpointX = cityCenter.x + k;
 		
-			if (seedMidPoints[i].y < cityCenterY)	currentEndpointY = (float)cityCenter.y - (k*slope);
-			else 									currentEndpointY = (float)cityCenter.y + (k*slope);
+			if (seedMidPoints[i].y < cityCenterY)	currentEndpointY = cityCenter.y - (k*slope);
+			else 									currentEndpointY = cityCenter.y + (k*slope);
 
 			districtEndPoints [i].x = currentEndpointX;
 			districtEndPoints [i].y = currentEndpointY;
