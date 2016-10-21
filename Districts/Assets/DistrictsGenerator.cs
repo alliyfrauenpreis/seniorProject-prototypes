@@ -112,6 +112,15 @@ public class DistrictsGenerator : MonoBehaviour {
 			points [i, 1] = newY;
 		}
 	}
+
+	/// <summary>
+	/// Determines if point is in 
+	/// </summary>
+	/// <returns><c>true</c>, if within region was gotten, <c>false</c> otherwise.</returns>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="y">The y coordinate.</param>
+	void getWithinRegion(int x, int y){
+	}
 }
 
 
