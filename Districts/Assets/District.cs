@@ -5,14 +5,22 @@ namespace AssemblyCSharp
 	public class District
 	{
 		private float[,] edgeVerticies;
+		private float[,] cityCenter;
 
-		public District ()
+		public District (float[,] center)
 		{
-			
+			cityCenter = center;
 		}
 
-		bool containsPoint(int x, int y){
+		public void setVerticies(float[,] verts){
 
+			edgeVerticies = verts;
+		}
+
+
+		public bool containsPoint(float[,] point){
+
+			return false;
 		}
 	}
 }

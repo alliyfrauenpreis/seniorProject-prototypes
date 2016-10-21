@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using AssemblyCSharp;
+
 
 public class DistrictsGenerator : MonoBehaviour {
 
@@ -10,7 +12,9 @@ public class DistrictsGenerator : MonoBehaviour {
 	private float[,] districtEdges;
 
 	[SerializeField]
-	private float    cityCenterX, cityCenterY;
+	private float[,] cityCenter;
+
+	private District[] districts;
 
 	/// <summary>
 	/// Start the program
@@ -29,6 +33,8 @@ public class DistrictsGenerator : MonoBehaviour {
 		int[,] initialSeedPoints = new int	[numDistricts,2];
 		int[,] seedMidPoints	 = new int	[numDistricts,2];
 			   districtEndPoints = new float[numDistricts,2];
+			   cityCenter 		 = new float[1, 2];
+			   districts 		 = new AssemblyCSharp.District[numDistricts];
 
 		// generate initial random seed points
 		for (int i = 0; i < numDistricts; ++i) {
@@ -47,8 +53,8 @@ public class DistrictsGenerator : MonoBehaviour {
 		}
 
 		// using these midpoints, get the center of the city
-		cityCenterX = 0;
-		cityCenterY = 0;
+		float cityCenterX = 0;
+		float cityCenterY = 0;
 
 		for (int i = 0; i < numDistricts; ++i){
 			cityCenterX += seedMidPoints[i,0];
@@ -57,6 +63,9 @@ public class DistrictsGenerator : MonoBehaviour {
 
 		cityCenterX = cityCenterX/numDistricts;
 		cityCenterY = cityCenterY/numDistricts;
+
+		cityCenter [0, 0] = cityCenterX;
+		cityCenter [0, 1] = cityCenterY;
 
 		// for each point, get the slope and it's length based districtSpan and its position relative to city center
 		for (int i = 0; i < numDistricts; ++i){
@@ -79,7 +88,11 @@ public class DistrictsGenerator : MonoBehaviour {
 
 		}
 
-		generateCityEdges (50, 100, 2000, 1500);
+		for (int i = 0; i < numDistricts; i++) {
+			districts [i] = new District (cityCenter);
+		}
+
+		generateCityEdges (50, 100, 800, 300);
 	}
 
 	/// <summary>
@@ -102,6 +115,9 @@ public class DistrictsGenerator : MonoBehaviour {
 			float furthestX = Mathf.Cos(angleFromCenter)*maxDistFromCenter;
 			float furthestY = Mathf.Sin(angleFromCenter)*maxDistFromCenter;
 
+			float cityCenterX = cityCenter [0, 0];
+			float cityCenterY = cityCenter [0, 1];
+
 			float percentageLength = Mathf.PerlinNoise (cityCenterX, cityCenterY);
 			float distanceFromCenter = percentageLength * maxDistFromCenter;
 
@@ -111,15 +127,6 @@ public class DistrictsGenerator : MonoBehaviour {
 			points [i, 0] = newX;
 			points [i, 1] = newY;
 		}
-	}
-
-	/// <summary>
-	/// Determines if point is in 
-	/// </summary>
-	/// <returns><c>true</c>, if within region was gotten, <c>false</c> otherwise.</returns>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="y">The y coordinate.</param>
-	void getWithinRegion(int x, int y){
 	}
 }
 
