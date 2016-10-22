@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using AssemblyCSharp;
 
 
 public class DistrictsGenerator : MonoBehaviour {
@@ -14,11 +13,14 @@ public class DistrictsGenerator : MonoBehaviour {
 	[SerializeField]
 	private District[] districts;
 
+	private DebugDistricts debugger;
+
 	/// <summary>
 	/// Entry point of the generator
 	/// </summary>
 	void Start () {
-		generateDistrictPoints (3, 2000);
+		debugger = GetComponent<DebugDistricts> ();
+		generateDistrictPoints (3, 500);
 	}
 
 	/// <summary>
@@ -33,7 +35,10 @@ public class DistrictsGenerator : MonoBehaviour {
 
 				  districtEndPoints = new Vector2[numDistricts];
 				  cityCenter 	    = new Vector2();
-			      districts 		= new AssemblyCSharp.District[numDistricts];
+			      districts 		= new District[numDistricts];
+
+		// TODO: use one seed for all procedural generation
+		// TODO: abstract out voroni implementation into its own
 
 		// generate initial random seed points -- range is districtMaxSpan to districtMaxSpan * 2 to prevent negatives.
 		for (int i = 0; i < numDistricts; ++i) {
@@ -174,32 +179,23 @@ public class DistrictsGenerator : MonoBehaviour {
 			districts [i].setVerticies (newDistrictVerts);
 		}
 
-		/* This is for testing purposes 
-		bool[,] pointsCheck = new bool[100,3];
-		Vector2[] points = new Vector2[100];
+		// This is for testing purposes 
+//		bool[,] pointsCheck = new bool[100,3];
+//		Vector2[] points = new Vector2[100];
+//
+//		for (int i = 0; i < 100; i++) {
+//
+//			float x = Random.Range (cityCenter.x, cityCenter.x*2);
+//			float y = Random.Range (cityCenter.x, cityCenter.x*2);
+//
+//			Vector2 newPoint = new Vector2 (x, y);
+//			for (int j = 0; j < 3; j++){
+//				pointsCheck[i,j] = districts[j].containsPoint(newPoint);
+//				points [i] = newPoint;
+//			}
+//		}
 
-		for (int i = 0; i < 100; i++) {
-
-			float x = Random.Range (cityCenter.x, cityCenter.x*2);
-			float y = Random.Range (cityCenter.x, cityCenter.x*2);
-
-			Vector2 newPoint = new Vector2 (x, y);
-			for (int j = 0; j < 3; j++){
-				pointsCheck[i,j] = districts[j].containsPoint(newPoint);
-				points [i] = newPoint;
-			}
-		}
-
-		bool[] pointsCheck = new bool[3];
-		Vector2 point = new Vector2 (cityCenter.x + 100, cityCenter.y + 100);
-		for (int j = 0; j < 3; j++){
-			pointsCheck[j] = districts[j].containsPoint(point);
-		}
-
-		int yay = 0;
-
-
-		*/
+		debugger.Verts = districts [0].getVerticies();
 	}
 
 }

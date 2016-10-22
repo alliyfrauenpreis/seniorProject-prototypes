@@ -1,93 +1,84 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
-using AssemblyCSharp;
 
-namespace AssemblyCSharp
+public class District
 {
-	public class District
+	[SerializeField]
+	private Vector2[] edgeVerticies;
+
+	[SerializeField]
+	private Vector2   cityCenter;
+
+	[SerializeField]
+	private String 	  districtName;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AssemblyCSharp.District"/> class.
+	/// </summary>
+	/// <param name="center">Center point of the city as determined by DistrictsGenerator.</param>
+	public District (Vector2 center)
 	{
-		[SerializeField]
-		private Vector2[] edgeVerticies;
+		cityCenter = center;
+	}
 
-		[SerializeField]
-		private Vector2   cityCenter;
+	/// <summary>
+	/// Sets the verticies of the edges of the district.
+	/// </summary>
+	/// <param name="verts">Vector of verticies to set.</param>
+	public void setVerticies(Vector2[] verts){
 
-		[SerializeField]
-		private String 	  districtName;
+		edgeVerticies = verts;
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AssemblyCSharp.District"/> class.
-		/// </summary>
-		/// <param name="center">Center point of the city as determined by DistrictsGenerator.</param>
-		public District (Vector2 center)
-		{
-			cityCenter = center;
-		}
+	/// <summary>
+	/// Gets the verticies that define the edges of this district.
+	/// </summary>
+	/// <returns>The verticies that make of this district's edges.</returns>
+	public Vector2[] getVerticies( ){
 
-		/// <summary>
-		/// Sets the verticies of the edges of the district.
-		/// </summary>
-		/// <param name="verts">Vector of verticies to set.</param>
-		public void setVerticies(Vector2[] verts){
+		return edgeVerticies;
+	}
 
-			edgeVerticies = verts;
-		}
+	/// <summary>
+	///  Sets the name of the district.
+	/// </summary>
+	/// <param name="name">Name to be set.</param>
+	public void setName(String name){
 
-		/// <summary>
-		/// Gets the verticies that define the edges of this district.
-		/// </summary>
-		/// <returns>The verticies that make of this district's edges.</returns>
-		public Vector2[] getVerticies( ){
+		districtName = name;
+	}
 
-			return edgeVerticies;
-		}
+	/// <summary>
+	///  Gets the name of the district.
+	/// </summary>
+	/// <returns>The name of the district.</returns>
+	public String getName(){
 
-		/// <summary>
-		///  Sets the name of the district.
-		/// </summary>
-		/// <param name="name">Name to be set.</param>
-		public void setName(String name){
+		return districtName;
+	}
 
-			districtName = name;
-		}
+	/// <summary>
+	/// Checks whether the point is within the bounds of the district.
+	/// </summary>
+	/// <returns><c>true</c>, if point is within district, <c>false</c> otherwise.</returns>
+	/// <param name="point">Point to be checked.</param>
+	public bool containsPoint(Vector2 point){
 
-		/// <summary>
-		///  Gets the name of the district.
-		/// </summary>
-		/// <returns>The name of the district.</returns>
-		public String getName(){
+		// check whether this point's x value is between the district's edges & the city center
+		if (point.x < edgeVerticies [0].x && point.x < edgeVerticies[1].x && point.x < cityCenter.x)
+			return false;
 
-			return districtName;
-		}
+		if (point.x > edgeVerticies [0].x && point.x > edgeVerticies[1].x && point.x > cityCenter.x)
+			return false;
 
-		/// <summary>
-		/// Checks whether the point is within the bounds of the district.
-		/// </summary>
-		/// <returns><c>true</c>, if point is within district, <c>false</c> otherwise.</returns>
-		/// <param name="point">Point to be checked.</param>
-		public bool containsPoint(Vector2 point){
+		// check whether this point's x value is between the district's edges & the city center
+		if (point.y < edgeVerticies [0].y && point.y < edgeVerticies[1].y && point.y < cityCenter.y)
+			return false;
 
-			// check whether this point's x value is between the district's edges
-			if (point.x < edgeVerticies [0].x && point.x < edgeVerticies[1].x && point.x < cityCenter.x)
-				return false;
+		if (point.y > edgeVerticies [0].y && point.y > edgeVerticies[1].y && point.y > cityCenter.y)
+			return false;
 
-			if (point.x > edgeVerticies [0].x && point.x > edgeVerticies[1].x && point.x > cityCenter.x)
-				return false;
-
-			// check whether this point's y value is between the district's edges
-			if (point.y < edgeVerticies [0].y && point.y < edgeVerticies[1].y && point.y < cityCenter.y)
-				return false;
-
-			if (point.y > edgeVerticies [0].y && point.y > edgeVerticies[1].y && point.y > cityCenter.y)
-				return false;
-
-
-			// HAVE TO CHECK AGAINST CENTER POINT OF THE CITY.
-
-
-			return true;
-		}
+		return true;
 	}
 }
-
