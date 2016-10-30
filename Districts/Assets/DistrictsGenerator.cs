@@ -13,14 +13,23 @@ public class DistrictsGenerator : MonoBehaviour {
 	[SerializeField]
 	private District[] districts;
 
+	[SerializeField]
 	private DebugDistricts debugger;
 
+	public int NumInitialSeeds = 3;
+	public int MaxDistrictSpan = 500;
+	public int MinVerts = 10;
+	public int MaxVerts = 30;
+	public int MinDistFromCenter = 300;
+	public int MaxDistFromCenter = 800;
+
 	/// <summary>
-	/// Entry point of the generator
+	/// Entry point of the generator.
 	/// </summary>
-	void Start () {
+	void Start () 
+	{
 		debugger = GetComponent<DebugDistricts> ();
-		generateDistrictPoints (3, 500);
+		generateDistrictPoints (NumInitialSeeds, MaxDistrictSpan);
 	}
 
 	/// <summary>
@@ -28,7 +37,8 @@ public class DistrictsGenerator : MonoBehaviour {
 	/// </summary>
 	/// <param name="numDistricts">Number of districts desired -- currently supports 3.</param>
 	/// <param name="districtMaxSpan">District max span for one side from center point to edge.</param>
-	void generateDistrictPoints(int numDistricts, int districtMaxSpan){
+	void generateDistrictPoints(int numDistricts, int districtMaxSpan)
+	{
 
 		Vector2[] initialSeedPoints = new Vector2[numDistricts];
 		Vector2[] seedMidPoints		= new Vector2[numDistricts];
@@ -41,18 +51,23 @@ public class DistrictsGenerator : MonoBehaviour {
 		// TODO: abstract out voroni implementation into its own
 
 		// generate initial random seed points -- range is districtMaxSpan to districtMaxSpan * 2 to prevent negatives.
-		for (int i = 0; i < numDistricts; ++i) {
-			
+		for (int i = 0; i < numDistricts; ++i) 
+		{
 			initialSeedPoints[i].x = Random.Range(districtMaxSpan*i, districtMaxSpan*(i+1));
 			initialSeedPoints[i].y = Random.Range(districtMaxSpan*i, districtMaxSpan*(i+1));
 
 			// this code ensures that neither the x nor the y values of this random point
 			// are too close to another existing random point. it will re-randomize if so.
-			if (initialSeedPoints.Length > 0){
-				for (int j = 0; j < initialSeedPoints.Length; j++){
-					if (initialSeedPoints[i].x != initialSeedPoints[j].x){
-						if (Mathf.Abs(initialSeedPoints[i].x - initialSeedPoints[j].x) < districtMaxSpan/2 || Mathf.Abs(initialSeedPoints[i].y - initialSeedPoints[j].y) < districtMaxSpan/2){
-							while(Mathf.Abs(initialSeedPoints[i].x - initialSeedPoints[j].x) < districtMaxSpan/2 || Mathf.Abs(initialSeedPoints[i].y - initialSeedPoints[j].y) < districtMaxSpan/2){
+			if (initialSeedPoints.Length > 0)
+			{
+				for (int j = 0; j < initialSeedPoints.Length; ++j)
+				{
+					if (initialSeedPoints[i].x != initialSeedPoints[j].x)
+					{
+						if (Mathf.Abs(initialSeedPoints[i].x - initialSeedPoints[j].x) < districtMaxSpan/2 || Mathf.Abs(initialSeedPoints[i].y - initialSeedPoints[j].y) < districtMaxSpan/2)
+						{
+							while(Mathf.Abs(initialSeedPoints[i].x - initialSeedPoints[j].x) < districtMaxSpan/2 || Mathf.Abs(initialSeedPoints[i].y - initialSeedPoints[j].y) < districtMaxSpan/2)
+							{
 								initialSeedPoints[i].x = Random.Range(districtMaxSpan, districtMaxSpan*2);
 								initialSeedPoints[i].y = Random.Range(districtMaxSpan, districtMaxSpan*2);
 							}
@@ -63,15 +78,17 @@ public class DistrictsGenerator : MonoBehaviour {
 		}
 
 		// calculate midpoints of all initial seeds
-		for (int i = 0; i < numDistricts; ++i){
-				
+		for (int i = 0; i < numDistricts; ++i)
+		{
 			float x = 0;
 			float y = 0;
 
-			if (i == numDistricts - 1) {
+			if (i == numDistricts - 1) 
+			{
 				x = (initialSeedPoints [i].x + initialSeedPoints [0].x) / 2;
 				y = (initialSeedPoints [i].y + initialSeedPoints [0].y) / 2;
-			} else {
+			} else 
+			{
 				x = (initialSeedPoints [i].x + initialSeedPoints [i+1].x) / 2;
 				y = (initialSeedPoints [i].y + initialSeedPoints [i+1].y) / 2;
 			}
@@ -84,7 +101,8 @@ public class DistrictsGenerator : MonoBehaviour {
 		float cityCenterX = 0;
 		float cityCenterY = 0;
 
-		for (int i = 0; i < numDistricts; ++i){
+		for (int i = 0; i < numDistricts; ++i)
+		{
 			cityCenterX += seedMidPoints[i].x;
 			cityCenterY += seedMidPoints[i].y;
 		}
@@ -92,11 +110,11 @@ public class DistrictsGenerator : MonoBehaviour {
 		cityCenter.x = cityCenterX/numDistricts;
 		cityCenter.y = cityCenterY/numDistricts;
 
-		float[] slopes = new float[3];
+		float[] slopes = new float[NumInitialSeeds];
 
 		// for each point, get the slope, its length based districtSpan, and its position relative to city center
-		for (int i = 0; i < numDistricts; ++i){
-
+		for (int i = 0; i < numDistricts; ++i)
+		{
 			float slope = (cityCenter.y-seedMidPoints[i].y)/(cityCenter.x-seedMidPoints[i].x);
 			slopes [i] = slope;
 			float k = districtMaxSpan/(Mathf.Sqrt(1+Mathf.Pow(slope, 2.0f)));
@@ -117,16 +135,19 @@ public class DistrictsGenerator : MonoBehaviour {
 		}
 
 		// assign each district its first two verticies based on the endpoints of its edges
-		for (int i = 0; i < numDistricts; i++) {
+		for (int i = 0; i < numDistricts; ++i) 
+		{
 			districts [i] = new District (cityCenter);
 
 			Vector2[] districtPoints = new Vector2[2];
 
 			// if it's the last district, its edges are that of the first and the last districts
-			if (i == numDistricts-1){
+			if (i == numDistricts-1)
+			{
 				districtPoints[0] = districtEndPoints[districtEndPoints.Length-1];
 				districtPoints[1] = districtEndPoints[0];
-			} else {
+			} else 
+			{
 				districtPoints[0] = districtEndPoints[i];
 				districtPoints[1] = districtEndPoints[i+1];
 			}
@@ -135,7 +156,7 @@ public class DistrictsGenerator : MonoBehaviour {
 		}
 
 		// generate verticies for each district to allow for more natural edges
-		generateCityEdges (10, 30, 800, 300);
+		generateCityEdges (MinVerts, MaxVerts, MaxDistFromCenter, MinDistFromCenter);
 	}
 
 	/// <summary>
@@ -145,11 +166,11 @@ public class DistrictsGenerator : MonoBehaviour {
 	/// <param name="maxVerts">Maximum # of vertices for edges of city</param>
 	/// <param name="maxDistFromCenter">Maximum distance of all verticies from center of city.</param>
 	/// <param name="minDistFromCenter">Minimum distance of all verticies from center of city.</param>
-	void generateCityEdges(int minVerts, int maxVerts, float maxDistFromCenter, float minDistFromCenter){
-
+	void generateCityEdges(int minVerts, int maxVerts, float maxDistFromCenter, float minDistFromCenter)
+	{
 		// for each district, generate random # of randomly angled points within the current area of the district
-		for (int i = 0; i < districts.Length; ++i){
-
+		for (int i = 0; i < districts.Length; ++i)
+		{
 			int numVerts = Random.Range (minVerts, maxVerts);
 			Vector2[] newDistrictVerts = new Vector2 [numVerts+2];	// must allow for two initial points
 			Vector2[] currentDistrictVerts = districts [i].getVerticies();
@@ -158,8 +179,8 @@ public class DistrictsGenerator : MonoBehaviour {
 			newDistrictVerts [0] = currentDistrictVerts [0];
 			newDistrictVerts [1] = currentDistrictVerts [1]; 
 
-			for (int j = 0; j < numVerts; ++j){
-
+			for (int j = 0; j < numVerts; ++j)
+			{
 				// determine distance of point from center of city using perlin noise
 				float percentageLength = Mathf.PerlinNoise (cityCenter.x, cityCenter.y);
 				float distanceFromCenter = percentageLength * maxDistFromCenter;
@@ -173,32 +194,13 @@ public class DistrictsGenerator : MonoBehaviour {
 				float angleFromCenter = Vector2.Angle (cityCenter, newRayPoint);
 				newDistrictVerts [j].x = cityCenter.x + (distanceFromCenter) * Mathf.Cos (angleFromCenter);
 				newDistrictVerts [j].y = cityCenter.y + (distanceFromCenter) * Mathf.Sin (angleFromCenter);
-
 			}
 
 			districts [i].setVerticies (newDistrictVerts);
 		}
 
-		// This is for testing purposes 
-//		bool[,] pointsCheck = new bool[100,3];
-//		Vector2[] points = new Vector2[100];
-//
-//		for (int i = 0; i < 100; i++) {
-//
-//			float x = Random.Range (cityCenter.x, cityCenter.x*2);
-//			float y = Random.Range (cityCenter.x, cityCenter.x*2);
-//
-//			Vector2 newPoint = new Vector2 (x, y);
-//			for (int j = 0; j < 3; j++){
-//				pointsCheck[i,j] = districts[j].containsPoint(newPoint);
-//				points [i] = newPoint;
-//			}
-//		}
-
 		debugger.Verts = districts [0].getVerticies();
 	}
 
 }
-
-
-// http://stackoverflow.com/questions/1638437/given-an-angle-and-length-how-do-i-calculate-the-coordinates
+	

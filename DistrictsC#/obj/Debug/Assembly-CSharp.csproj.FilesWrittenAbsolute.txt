@@ -1,0 +1,17 @@
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Assembly-CSharp.dll.mdb
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Assembly-CSharp.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/obj/Debug/Assembly-CSharp.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/obj/Debug/Assembly-CSharp.dll.mdb
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/UnityEngine.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/UnityEditor.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/UnityEngine.UI.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/UnityEngine.Networking.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Mono.Cecil.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Unity.SerializationLogic.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Unity.DataContract.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/ICSharpCode.NRefactory.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Unity.UNetWeaver.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Unity.UNetWeaver.dll.mdb
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Unity.CecilTools.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Mono.Cecil.Pdb.dll
+/Users/allisonfrauenpreis/Documents/School/SeniorProject-prototypes/DistrictsC#/Temp/bin/Debug/Mono.Cecil.Mdb.dll
